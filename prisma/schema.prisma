@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  created_at DateTime @default(now())
+  name      String
+  email     String    @unique
+  password  String
+
+  boards    Board[]   @relation("UserBoards")
+  tasks     Task[]    @relation("AssignedTasks")  
+  userBoards UserBoard[]
+}
+
+model Board {
+  id        String    @id @default(uuid())
+  created_at DateTime @default(now())
+  title     String
+  owner_id  String
+
+  owner     User      @relation("UserBoards", fields: [owner_id], references: [id])
+  columns   Column[]
+  userBoards UserBoard[]
+}
+
+model UserBoard {
+  id       String  @id @default(uuid())
+  user_id  String
+  board_id String
+
+  user     User    @relation(fields: [user_id], references: [id])
+  board    Board   @relation(fields: [board_id], references: [id])
+}
+
+model Column {
+  id       String  @id @default(uuid())
+  board_id String
+  title    String
+  position Int
+
+  board    Board   @relation(fields: [board_id], references: [id])
+  tasks    Task[]
+}
+
+model Task {
+  id          String    @id @default(uuid())
+  column_id   String
+  created_at  DateTime  @default(now())
+  title       String
+  description String?
+  position    Int
+  start_date  DateTime?
+  end_date    DateTime?
+  assigned_to String?
+  priority    String?
+
+  column      Column    @relation(fields: [column_id], references: [id])
+  assigned    User?     @relation("AssignedTasks", fields: [assigned_to], references: [id])
+}
