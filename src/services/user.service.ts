@@ -4,14 +4,14 @@ import TokenService from "./token.service";
 
 class UserService {
   async registration(name: string, email: string, password: string) {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.users.findUnique({ where: { email } });
     if (existingUser) {
       throw { status: 400, message: "User already exists" };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
+    const user = await prisma.users.create({
       data: {
         name,
         email,
@@ -31,7 +31,7 @@ class UserService {
   }
 
   async login(email: string, password: string) {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.users.findUnique({ where: { email } });
 
     if (!user) {
       throw { status: 404, message: "User not found" };
@@ -67,7 +67,7 @@ class UserService {
       throw { status: 401, message: "Invalid refresh token" };
     }
 
-    const user = await prisma.user.findUnique({ where: { id: userData.id } });
+    const user = await prisma.users.findUnique({ where: { id: userData.id } });
     if (!user) {
       throw { status: 401, message: "User not found" };
     }

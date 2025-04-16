@@ -14,49 +14,49 @@ datasource db {
   url      = env("DB_URL")
 }
 
-model User {
+model users {
   id        String    @id @default(uuid())
   created_at DateTime @default(now())
   name      String
   email     String    @unique
   password  String
 
-  boards    Board[]   @relation("UserBoards")
-  tasks     Task[]    @relation("AssignedTasks")  
-  userBoards UserBoard[]
+  boards    boards[]   @relation("user_boards")
+  tasks     tasks[]    @relation("AssignedTasks")  
+  user_boards user_boards[]
 }
 
-model Board {
+model boards {
   id        String    @id @default(uuid())
   created_at DateTime @default(now())
   title     String
   owner_id  String
 
-  owner     User      @relation("UserBoards", fields: [owner_id], references: [id])
-  columns   Column[]
-  userBoards UserBoard[]
+  owner     users      @relation("user_boards", fields: [owner_id], references: [id])
+  columns   columns[]
+  user_boards user_boards[]
 }
 
-model UserBoard {
+model user_boards {
   id       String  @id @default(uuid())
   user_id  String
   board_id String
 
-  user     User    @relation(fields: [user_id], references: [id])
-  board    Board   @relation(fields: [board_id], references: [id])
+  user     users    @relation(fields: [user_id], references: [id])
+  board    boards   @relation(fields: [board_id], references: [id])
 }
 
-model Column {
+model columns {
   id       String  @id @default(uuid())
   board_id String
   title    String
   position Int
 
-  board    Board   @relation(fields: [board_id], references: [id])
-  tasks    Task[]
+  board    boards   @relation(fields: [board_id], references: [id])
+  tasks    tasks[]
 }
 
-model Task {
+model tasks {
   id          String    @id @default(uuid())
   column_id   String
   created_at  DateTime  @default(now())
@@ -68,6 +68,6 @@ model Task {
   assigned_to String?
   priority    String?
 
-  column      Column    @relation(fields: [column_id], references: [id])
-  assigned    User?     @relation("AssignedTasks", fields: [assigned_to], references: [id])
+  column      columns    @relation(fields: [column_id], references: [id])
+  assigned    users?     @relation("AssignedTasks", fields: [assigned_to], references: [id])
 }
