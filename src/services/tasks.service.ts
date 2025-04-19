@@ -44,7 +44,7 @@ class TasksService {
 
   async updateTask(id: string, data: UpdateTaskDto) {
     if (!id) throw { status: 400, message: "Task ID is required" };
-
+    console.log(data);
     const task = await prisma.tasks.findUnique({ where: { id } });
     if (!task) throw { status: 404, message: "Task not found" };
 

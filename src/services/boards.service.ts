@@ -15,6 +15,29 @@ class BoardsService {
 
     return userBoards.map((ub) => ub.board);
   }
+  async getUsersByBoardId(boardId: string) {
+    const boardExists = await prisma.boards.findUnique({
+      where: { id: boardId },
+    });
+
+    if (!boardExists) {
+      throw { status: 404, message: "Board not found" };
+    }
+
+    const users = await prisma.user_boards.findMany({
+      where: { board_id: boardId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return users.map((ub) => ub.user);
+  }
 
   async createBoard(title: string, owner_id: string) {
     if (!title || !owner_id) {

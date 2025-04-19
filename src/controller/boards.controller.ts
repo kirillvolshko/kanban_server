@@ -21,7 +21,15 @@ class BoardsController {
       res.status(500).json({ error: error });
     }
   }
-
+  async getUsersByBoardId(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const users = await boardsService.getUsersByBoardId(id);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json({ error: error });
+    }
+  }
   async deleteBoard(req: Request, res: Response) {
     try {
       const { id } = req.params;
