@@ -39,6 +39,24 @@ class BoardsController {
       res.status(500).json({ error: error });
     }
   }
+  async addUserToBoard(req: Request, res: Response) {
+    try {
+      const { board_id, email } = req.body;
+      const result = await boardsService.addUserToBoard(board_id, email);
+      res.status(201).json(result);
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+  async removeUserFromBoard(req: Request, res: Response) {
+    try {
+      const { board_id, user_id } = req.body;
+      const result = await boardsService.removeUserFromBoard(board_id, user_id);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
 }
 
 export default new BoardsController();
