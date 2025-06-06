@@ -8,5 +8,5 @@ boardsRoutes.post("/boards", boardsController.createBoard);
 boardsRoutes.delete("/boards/:id", boardsController.deleteBoard);
 boardsRoutes.get("/boards/:id/users", boardsController.getUsersByBoardId);
 boardsRoutes.post("/boards/add-user", boardsController.addUserToBoard);
-boardsRoutes.delete("/boards/user", boardsController.removeUserFromBoard);
+boardsRoutes.delete("/board/remove-user", boardsController.removeUserFromBoard);
 export default boardsRoutes;
